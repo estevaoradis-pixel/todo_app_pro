@@ -1,0 +1,38 @@
+<div class="task-card-wrapper" data-aos="fade-up-right" data-aos-delay="{{ loop.index * 50 }}">
+    <div class="task-card glass-card {{ 'completed' if task.completed else '' }} priority-{{ task.priority }}" data-task-id="{{ task.id }}">
+        <div class="task-header">
+            <div class="task-checkbox">
+                <i class="fas fa-circle-notch fa-spin if-loading"></i>
+                <input type="checkbox" {{ 'checked' if task.completed else '' }} class="task-check" disabled>
+            </div>
+            <div class="task-priority-badge priority-{{ task.priority }}">
+                P{{ task.priority }}
+            </div>
+        </div>
+        <div class="task-content">
+            <h6 class="task-title {{ 'completed' if task.completed else '' }}">
+                {{ task.content }}
+            </h6>
+            {% if task.due_date %}
+            <div class="due-date">
+                <i class="fas fa-calendar-alt me-1"></i>
+                <span class="{% if task.due_date < datetime.utcnow() %}overdue{% else %}normal{% endif %}">
+                    {{ task.due_date.strftime('%d/%m/%Y') }}
+                </span>
+            </div>
+            {% endif %}
+            <small class="task-date">
+                <i class="fas fa-clock me-1"></i>{{ task.created_at.strftime('%d/%m %H:%M') }}
+            </small>
+        </div>
+        <div class="task-actions">
+            <a href="{{ url_for('complete_task', task_id=task.id) }}" class="btn-action toggle-btn" title="Toggle">
+                <i class="fas {{ 'fa-check-circle' if task.completed else 'fa-circle' }}"></i>
+            </a>
+            <a href="{{ url_for('delete_task', task_id=task.id) }}" class="btn-action delete-btn" title="Deletar">
+                <i class="fas fa-trash"></i>
+            </a>
+        </div>
+    </div>
+</div>
+

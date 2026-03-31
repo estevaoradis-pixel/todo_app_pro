@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - ToDo Pro Senior{% endblock %}
+{% block content %}
+<div data-aos="fade-up">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">
+            <i class="fas fa-clipboard-list me-2"></i>
+            Minhas Tarefas
+        </h1>
+        <div>
+            <a href="{{ url_for('export') }}" class="btn btn-outline-light btn-sm me-2" data-aos="zoom-in">
+                <i class="fas fa-download"></i> Export CSV
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4 g-3" data-aos="fade-up" data-aos-delay="100">
+        <div class="col-md-3">
+            <div class="stat-card total">
+                <i class="fas fa-tasks stat-icon"></i>
+                <div>
+                    <div class="stat-number">{{ stats.total }}</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card pending">
+                <i class="fas fa-clock stat-icon"></i>
+                <div>
+                    <div class="stat-number">{{ stats.pending }}</div>
+                    <div class="stat-label">Pendentes</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card completed">
+                <i class="fas fa-check-circle stat-icon"></i>
+                <div>
+                    <div class="stat-number">{{ stats.total - stats.pending }}</div>
+                    <div class="stat-label">Concluídas</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card high-priority">
+                <i class="fas fa-exclamation-triangle stat-icon"></i>
+                <div>
+                    <div class="stat-number">{{ stats.high_priority or 0 }}</div>
+                    <div class="stat-label">Alta Prioridade</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls mb-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Pesquisar</label>
+                <input type="text" id="searchInput" class="form-control" placeholder="Digite para filtrar...">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Filtro</label>
+                <select id="filterSelect" class="form-select">
+                    <option value="all">Todas</option>
+                    <option value="pending">Pendentes</option>
+                    <option value="completed">Concluídas</option>
+                    <option value="high">Alta Prioridade</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Ordenar</label>
+                <select id="sortSelect" class="form-select">
+                    <option value="created">Mais recentes</option>
+                    <option value="priority">Prioridade</option>
+                    <option value="due">Vencimento</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button id="clearFilters" class="btn btn-outline-light">Limpar Filtros</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Task Form -->
+    <div class="add-task-form mb-5 glass-card" data-aos="fade-up" data-aos-delay="300">
+        <h5><i class="fas fa-plus-circle me-2"></i>Nova Tarefa</h5>
+        <form method="POST" action="{{ url_for('add_task') }}" id="taskForm">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Descrição *</label>
+                    <input type="text" class="form-control" name="content" required autocomplete="off">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Prioridade</label>
+                    <select name="priority" class="form-select">
+                        <option value="1">Alta</option>
+                        <option value="2" selected>Normal</option>
+                        <option value="3">Baixa</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Data Limite</label>
+                    <input type="date" name="due_date" class="form-control">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-plus"></i> Adicionar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tasks Grid -->
+    <div id="tasksContainer" class="tasks-grid">
+        {% for task in tasks %}
+        {% include 'task_card.html' %}
+        {% endfor %}
+        {% if not tasks %}
+        <div class="empty-state" data-aos="zoom-in">
+            <i class="fas fa-inbox empty-icon"></i>
+            <h4>Nenhuma tarefa</h4>
+            <p>Crie sua primeira tarefa acima!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
